@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block body %}
+<h2>审评详情</h2>
+<p>批次：{{ row.lot }}</p>
+<p>香气：{{ row.aroma }}　滋味：{{ row.taste }}　汤色：{{ row.liquor }}</p>
+<p>加权分：{{ row.score }}</p>
+<p class="{% if row.verdict == '通过' %}pass{% else %}fail{% endif %}">结论：{{ row.verdict }}</p>
+<p>说明：{{ row.note }}</p>
+<p><a href="{{ url_for('home') }}">返回总表</a></p>
+{% endblock %}
