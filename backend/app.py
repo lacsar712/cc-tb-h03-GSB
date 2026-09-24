@@ -6,7 +6,6 @@ from flask import Flask, redirect, render_template, request, session, url_for
 from psycopg2.extras import RealDictCursor
 
 from rules import weigh
-from score_blank import map_list_fields, project_fragment_row, detail_keeps_score
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("FLASK_SECRET", "tea-cupping-dev-secret")
@@ -63,7 +62,6 @@ def home():
     with db() as conn, conn.cursor(cursor_factory=RealDictCursor) as cur:
         cur.execute("SELECT * FROM cuppings ORDER BY id DESC")
         rows = cur.fetchall()
-    rows = map_list_fields(rows)
     return render_template("home.html", rows=rows, can_write=session.get("role") == "writer")
 
 
@@ -86,7 +84,7 @@ def create():
         row = cur.fetchone()
         conn.commit()
     if request.headers.get("HX-Request"):
-        return render_template("_row.html", row=project_fragment_row(dict(row)))
+        return render_template("_row.html", row=dict(row))
     return redirect(url_for("home"))
 
 
@@ -98,4 +96,4 @@ def detail(cupping_id: int):
         row = cur.fetchone()
     if not row:
         return ("未找到", 404)
-    return render_template("detail.html", row=detail_keeps_score(dict(row)))
+    return render_template("detail.html", row=dict(row))
